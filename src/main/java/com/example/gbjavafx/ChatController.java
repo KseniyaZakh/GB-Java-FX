@@ -2,16 +2,8 @@ package com.example.gbjavafx;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-
-
-import javax.swing.filechooser.FileView;
-import java.io.*;
-
-import static javax.swing.text.StyleConstants.Background;
 
 
 public class ChatController {
@@ -20,13 +12,19 @@ public class ChatController {
     @FXML
     private TextArea messageArea;
 
+    private EchoClient client;
+
+    public ChatController() {
+        client = new EchoClient(this);
+    }
+
     public void clickButtonSend(ActionEvent actionEvent) {
-        final String message = messageField.getText();
+        final String message = messageField.getText().trim();
         if (message.isEmpty()) {
             return;
         }
-        messageArea.appendText(message + "\n");
-        messageField.setText(" ");
+        client.sendMessage(message);
+        messageField.clear();
         messageField.requestFocus();
     }
 
@@ -41,4 +39,7 @@ public class ChatController {
     }
 
 
+    public void addMessage(String message) {
+        messageArea.appendText (message + "\n");
+    }
 }
