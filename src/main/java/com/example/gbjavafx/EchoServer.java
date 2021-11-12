@@ -17,7 +17,16 @@ public class EchoServer {
             final DataInputStream in = new DataInputStream(socket.getInputStream());
             final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Введите сообщение клиенту");
+                    String msg = scanner.next();
+                    System.out.println("Сообщение клиенту: + msg");
 
+                }
+            }).start();
             while (true) {
                 final String message = in.readUTF();
                 System.out.println("Сообщение от клиента: " + message);
@@ -31,16 +40,7 @@ public class EchoServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Введите сообщение клиенту");
-                String msg = scanner.next();
-                System.out.println("Сообщение клиенту: + msg");
 
-            }
-        }).start();
     }
 }
 
