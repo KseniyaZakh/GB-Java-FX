@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class EchoServer {
     public static void main(String[] args) {
@@ -15,6 +16,8 @@ public class EchoServer {
             System.out.println("Клиент подключился");
             final DataInputStream in = new DataInputStream(socket.getInputStream());
             final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+
             while (true) {
                 final String message = in.readUTF();
                 System.out.println("Сообщение от клиента: " + message);
@@ -22,11 +25,23 @@ public class EchoServer {
                     out.writeUTF("/end");
                     break;
                 }
-                out.writeUTF("Эхо: " + message);}
-
-            } catch(IOException e){
-                e.printStackTrace();
+                out.writeUTF("Эхо: " + message);
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Введите сообщение клиенту");
+                String msg = scanner.next();
+                System.out.println("Сообщение клиенту: + msg");
+
+            }
+        }).start();
     }
+}
+
 
