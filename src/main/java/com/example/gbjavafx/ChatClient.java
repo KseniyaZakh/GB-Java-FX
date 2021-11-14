@@ -1,18 +1,21 @@
 package com.example.gbjavafx;
 
+import com.example.gbjavafx.server.ChatServer;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class EchoClient {
+public class ChatClient {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
 
     private ChatController controller;
+    private ChatServer server;
 
-    public EchoClient(ChatController controller) {
+    public ChatClient(ChatController controller) {
         this.controller = controller;
         openConnection();
     }
@@ -31,8 +34,9 @@ public class EchoClient {
                             if ("/end".equals(message)) {
                                 break;
                             }
-
                             controller.addMessage(message);
+                           
+
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

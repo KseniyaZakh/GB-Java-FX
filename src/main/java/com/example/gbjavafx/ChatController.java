@@ -12,10 +12,10 @@ public class ChatController {
     @FXML
     private TextArea messageArea;
 
-    private EchoClient client;
+    private ChatClient client;
 
     public ChatController() {
-        client = new EchoClient(this);
+        client = new ChatClient(this);
     }
 
     public void clickButtonSend(ActionEvent actionEvent) {
@@ -40,6 +40,6 @@ public class ChatController {
 
 
     public void addMessage(String message) {
-        messageArea.appendText (message + "\n");
+        messageArea.appendText(message + "\n");
     }
 }

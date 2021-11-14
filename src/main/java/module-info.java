@@ -13,4 +13,6 @@ module com.example.gbjavafx {
 
     opens com.example.gbjavafx to javafx.fxml;
     exports com.example.gbjavafx;
+    exports com.example.gbjavafx.server;
+    opens com.example.gbjavafx.server to javafx.fxml;
 }
