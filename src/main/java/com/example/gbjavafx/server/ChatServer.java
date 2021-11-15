@@ -1,5 +1,8 @@
 package com.example.gbjavafx.server;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +11,36 @@ public class ChatServer {
     private final List<ClientHandler> clients;
 
     public ChatServer() {
-        this.authService = authService;
+        this.authService = new SimpleAuthService();
         this.clients = new ArrayList<>();
+
+        try (ServerSocket serverSocket = new ServerSocket(8189)) {
+            while (true) {
+                final Socket socket = serverSocket.accept();
+                new ClientHandler(socket, this);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public AuthService getAuthService() {
+        return authService;
+    }
+
+    public boolean isNickBusy(String nick) {
+        for (ClientHandler client : clients) {
+            if (client.getNick().equals(nick)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void subscribe (ClientHandler client){
+        clients.add(client);
+    }
+    public void unsubscribe (ClientHandler client){
+        clients.remove(client);
     }
 }
 
