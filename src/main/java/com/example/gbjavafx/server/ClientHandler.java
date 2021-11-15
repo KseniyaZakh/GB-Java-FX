@@ -96,6 +96,18 @@ public class ClientHandler {
     }
 
     private void readMessages() {
+        try {
+            while (true) {
+                final String msg = in.readUTF();
+                if ("/end".equals(msg)) {
+                    break;
+                }
+                sendMessage(nick + ": " + msg);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getNick() {
