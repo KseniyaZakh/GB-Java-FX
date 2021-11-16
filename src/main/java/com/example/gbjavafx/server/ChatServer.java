@@ -42,6 +42,12 @@ public class ChatServer {
     public void unsubscribe (ClientHandler client){
         clients.remove(client);
     }
+
+    public void broadcast(String msg) {
+        for (ClientHandler client: clients){
+            client.sendMessage(msg);
+        }
+    }
 }
 
 

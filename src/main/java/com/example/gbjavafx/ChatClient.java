@@ -25,24 +25,31 @@ public class ChatClient {
             socket = new Socket("localhost", 8189);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        while (true) {
-                            final String message = in.readUTF();
-                            if ("/end".equals(message)) {
-                                break;
-                            }
-                            controller.addMessage(message);
-                           
 
+            new Thread(() -> {
+                try {
+                    while (true){
+                        String msgAuth = in.readUTF();
+                        if(msgAuth.startsWith("/authok")){
+                            final String [] split = msgAuth.split(" ");
+                            final String nick = split[1];
+                            controller.addMessage("Успешная авторизация под ником "+ nick);
+                            break;
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        closeConnection();
                     }
+                    while (true) {
+                        final String message = in.readUTF();
+                        if ("/end".equals(message)) {
+                            break;
+                        }
+                        controller.addMessage(message);
+
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    closeConnection();
                 }
             }).start();
         } catch (IOException e) {
