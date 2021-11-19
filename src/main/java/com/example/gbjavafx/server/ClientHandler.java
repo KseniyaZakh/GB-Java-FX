@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ClientHandler {
+    private static final String SEND_MESSAGE_TO_CLIENT_COMMAND = "/w";
+    private static final String END_COMMAND = "/end";
     private final Socket socket;
     private final ChatServer server;
     private final DataInputStream in;
@@ -74,7 +76,7 @@ public class ClientHandler {
                             continue;
                         }
                         sendMessage("/authok " + nick);
-                        server.broadcast ("Пользователь "+ nick + "зашел в чат");
+                        server.broadcast("Пользователь " + nick + "зашел в чат");
                         this.nick = nick;
                         server.subscribe(this);
                         break;
@@ -101,8 +103,16 @@ public class ClientHandler {
         try {
             while (true) {
                 final String msg = in.readUTF();
-                if ("/end".equals(msg)) {
-                    break;
+                if (msg.startsWith("/")) {
+                    if (END_COMMAND.equals(msg)) {
+                        break;
+                    }
+                    if (msg.startsWith(SEND_MESSAGE_TO_CLIENT_COMMAND)) {
+                        final String[] token = msg.split(" ");
+                        final String nick = token[1];
+                        server.sendMessageToClient(this, nick, msg.substring(SEND_MESSAGE_TO_CLIENT_COMMAND.length() + 2 + nick.length()));
+                    }
+                    continue;
                 }
                 server.broadcast(nick + ": " + msg);
             }
