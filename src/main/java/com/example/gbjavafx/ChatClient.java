@@ -6,6 +6,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChatClient {
     private Socket socket;
@@ -17,7 +19,7 @@ public class ChatClient {
 
     public ChatClient(ChatController controller) {
         this.controller = controller;
-        openConnection();
+
     }
 
     public void openConnection() {
@@ -28,19 +30,28 @@ public class ChatClient {
 
             new Thread(() -> {
                 try {
-                    while (true){
+                    while (true) {
                         String msgAuth = in.readUTF();
-                        if(msgAuth.startsWith("/authok")){
-                            final String [] split = msgAuth.split(" ");
+                        if (msgAuth.startsWith("/authok")) {
+                            final String[] split = msgAuth.split(" ");
                             final String nick = split[1];
-                            controller.addMessage("Успешная авторизация под ником "+ nick);
+                            controller.addMessage("Успешная авторизация под ником " + nick);
+                            controller.setAuth(true);
                             break;
                         }
                     }
                     while (true) {
                         final String message = in.readUTF();
-                        if ("/end".equals(message)) {
-                            break;
+                        if (message.startsWith("/")) {
+                            if ("/end".equals(message)) {
+                                controller.setAuth(false);
+                                break;
+                            }
+                            if (message.startsWith("/clients")) {
+                                final String[] tokens = message.replace(" /clients", "").split(" ");
+                                List<String> clients = Arrays.asList(tokens);
+                                controller.updateClientList(clients);
+                            }
                         }
                         controller.addMessage(message);
 
