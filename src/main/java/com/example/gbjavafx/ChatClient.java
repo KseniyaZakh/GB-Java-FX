@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class ChatClient {
 
     private ChatController controller;
     private ChatServer server;
+
 
     public ChatClient(ChatController controller) {
         this.controller = controller;
@@ -32,6 +34,7 @@ public class ChatClient {
                 try {
                     while (true) {
                         String msgAuth = in.readUTF();
+
                         if (msgAuth.startsWith("/authok")) {
                             final String[] split = msgAuth.split(" ");
                             final String nick = split[1];
@@ -39,7 +42,10 @@ public class ChatClient {
                             controller.setAuth(true);
                             break;
                         }
+
                     }
+
+
                     while (true) {
                         final String message = in.readUTF();
                         if (message.startsWith("/")) {
@@ -60,15 +66,21 @@ public class ChatClient {
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
-                    closeConnection();
+                    try {
+                        closeConnection();
+                    } catch (SocketException e) {
+                        e.printStackTrace();
+                    }
                 }
             }).start();
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
         }
+
     }
 
-    private void closeConnection() {
+    private void closeConnection() throws SocketException {
         if (socket != null) {
             try {
                 socket.close();
@@ -90,6 +102,7 @@ public class ChatClient {
                 e.printStackTrace();
             }
         }
+
         System.exit(0);
     }
 

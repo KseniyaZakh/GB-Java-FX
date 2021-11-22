@@ -58,7 +58,7 @@ public class ChatServer {
     }
 
     public void broadcastClientsList() {
-        StringBuilder clientsCommand = new StringBuilder("/clients");
+        StringBuilder clientsCommand = new StringBuilder("/clients ");
         for (ClientHandler client : clients.values()) {
             clientsCommand.append(client.getNick()).append(" ");
         }

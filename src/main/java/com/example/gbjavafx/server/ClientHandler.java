@@ -4,11 +4,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ClientHandler {
     private static final String COMMAND_PREFIX = "/";
-    private static final String SEND_MESSAGE_TO_CLIENT_COMMAND =COMMAND_PREFIX + "w";
+    private static final String SEND_MESSAGE_TO_CLIENT_COMMAND = COMMAND_PREFIX + "w";
     private static final String END_COMMAND = COMMAND_PREFIX + "end";
+    private static final long TIME_AUTH = 12000;
     private final Socket socket;
     private final ChatServer server;
     private final DataInputStream in;
@@ -63,6 +66,23 @@ public class ClientHandler {
     }
 
     private void authenticate() {
+        Thread thread = new Thread(() -> {
+
+        try {
+                synchronized (this) {
+                    if (nick == null) {
+                        Thread.sleep(1200);
+                        sendMessage("Время для авторизации вышло");
+                        socket.close();
+                    }
+                }
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+
         while (true) {
             try {
                 String str = in.readUTF();
@@ -126,4 +146,5 @@ public class ClientHandler {
     public String getNick() {
         return nick;
     }
+
 }
