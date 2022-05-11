@@ -1,5 +1,6 @@
 package com.example.gbjavafx.server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,16 @@ public class SimpleAuthService implements AuthService {
             }
         }
         return null;
+    }
+
+    @Override
+    public void run() {
+        System.out.println("AuthService run");
+    }
+
+    @Override
+    public void close() throws IOException {
+        System.out.println("AuthService closed");
     }
 
     private static class UserData {
