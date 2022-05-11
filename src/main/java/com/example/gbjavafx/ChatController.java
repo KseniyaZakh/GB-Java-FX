@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
-import javax.swing.*;
 import java.util.List;
 
 
@@ -34,6 +33,8 @@ public class ChatController {
 
         client = new ChatClient(this);
         client.openConnection();
+
+
     }
 
     public void clickButtonSend(ActionEvent actionEvent) {
@@ -86,4 +87,6 @@ public class ChatController {
         clientList.getItems().clear();
         clientList.getItems().addAll(clients);
     }
+
+
 }
